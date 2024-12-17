@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bookinkado</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        position: relative;
+      }
+
+      .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        width: 100%;
+        position: relative;
+        z-index: 2;
+      }
+
+      .container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: 1;
+        border-radius: 8px;
+      }
+
+      .content-block {
+        transition: transform 0.1s, box-shadow 0.1s;
+        position: relative;
+        z-index: 2;
+      }
+
+      .content-block::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        border-radius: 8px;
+        box-shadow: 0 0px 100vh rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transition: opacity 0.1s, filter 0.1s;
+      }
+
+      .content-block:hover::before {
+        opacity: 1;
+        filter: blur(5px);
+      }
+
+      .content-block:hover ~ .container::before {
+        opacity: 1;
+      }
+
+      h1,
+      h2 {
+        color: #555;
+      }
+
+      p,
+      ul {
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="content">
+      <!-- Content will be loaded here -->
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+      fetch("Bookinkado.md")
+        .then((response) => response.text())
+        .then((text) => {
+          const content = marked.parse(text);
+          const contentContainer = document.getElementById("content");
+          contentContainer.innerHTML = content;
+
+          // Wrap each paragraph and list in a div with class 'content-block'
+          const paragraphs = contentContainer.querySelectorAll("p, ul");
+          paragraphs.forEach((paragraph) => {
+            const wrapper = document.createElement("div");
+            wrapper.className = "content-block";
+            paragraph.parentNode.insertBefore(wrapper, paragraph);
+            wrapper.appendChild(paragraph);
+          });
+        });
+    </script>
+  </body>
+</html>
